@@ -1,0 +1,7 @@
+spring:
+  data:
+    cassandra:
+      keyspace-name: member
+      contact-points: localhost
+      port: 9042
+      schema-action: CREATE_IF_NOT_EXISTS
