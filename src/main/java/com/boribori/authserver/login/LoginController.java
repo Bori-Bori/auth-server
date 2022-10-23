@@ -1,5 +1,6 @@
 package com.boribori.authserver.login;
 
+import com.boribori.authserver.oauth2.Oauth2Properties;
 import com.boribori.authserver.oauth2.util.OAuth2RequestUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ public class LoginController {
 
     private final OAuth2RequestUtil oAuth2RequestUtil;
 
+    private final Oauth2Properties oauth2Properties;
+
     @GetMapping("/api/login")
     public Mono<ResponseEntity> login(@RequestParam String code){
         Mono<ResponseEntity> a = oAuth2RequestUtil.requestAuth(code)
@@ -25,5 +28,10 @@ public class LoginController {
                 ).cast(ResponseEntity.class);
 
         return a;
+    }
+
+    @GetMapping("/api/test")
+    public String test(){
+        return oauth2Properties.getProperties().get("google").getClientId();
     }
 }
