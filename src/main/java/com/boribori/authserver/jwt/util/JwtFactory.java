@@ -4,34 +4,37 @@ import com.boribori.authserver.member.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
 
+@RequiredArgsConstructor
 @Component
 public class JwtFactory {
 
+    private final JwtProperties jwtProperties;
     /**
      * JWT 의 엑세스 토큰 키
      */
-    private String ACCESS_TOKEN_SECRET_KEY = "sample";
+    private String ACCESS_TOKEN_SECRET_KEY = jwtProperties.getProperties().get("accessToken").getKey();
 
     /**
      * JWT 의 리프레시 토큰 키
      */
-    private String REFRESH_TOKEN_SECRET_KEY = "sample";
+    private String REFRESH_TOKEN_SECRET_KEY = jwtProperties.getProperties().get("refreshToken").getKey();
 
     /**
      * 엑세스 토큰 유효 기간
      */
-    private Long ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1000L; // 30 minutes
+    private Long ACCESS_TOKEN_VALID_TIME = jwtProperties.getProperties().get("accessToken").getExpiredTime();
 
     /**
      * 리프레시 토큰 유효 기간
      */
-    private Long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 60 * 24 * 30; //30 days
+    private Long REFRESH_TOKEN_VALID_TIME = jwtProperties.getProperties().get("refreshToken").getExpiredTime();
 
     /**
      * Base64로 인코딩된 엑세스 토큰 키
