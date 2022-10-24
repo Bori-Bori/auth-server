@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -20,9 +21,9 @@ public class LoginController {
 
     private final Oauth2Properties oauth2Properties;
 
-    @GetMapping("/api/login")
-    public Mono<ResponseEntity> login(@RequestParam String code){
-        Mono<ResponseEntity> a = oAuth2RequestUtil.requestAuth(code)
+    @GetMapping("/api/login/{target}")
+    public Mono<ResponseEntity> login(@RequestParam String code, @PathVariable(name = "target")String target){
+        Mono<ResponseEntity> a = oAuth2RequestUtil.requestAuth(code, target)
                 .map(response ->
                     ResponseEntity.status(HttpStatus.OK).body(response)
                 ).cast(ResponseEntity.class);

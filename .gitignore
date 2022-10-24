@@ -120,6 +120,7 @@ fabric.properties
 # application properties
 application-auth.yml
 application.yml
+index.html
 
 # etc
 *.log
