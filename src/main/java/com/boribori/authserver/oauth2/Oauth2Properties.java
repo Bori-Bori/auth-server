@@ -24,6 +24,7 @@ public class Oauth2Properties {
         private String clientSecret;
         private String tokenUri;
         private String userInfoUri;
+        private String redirectUri;
 
     }
 }
