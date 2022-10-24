@@ -23,28 +23,28 @@ public class JwtProvider {
     /**
      * 엑세스 토큰 키
      */
-    String accessTokenKey = jwtProperties.getProperties().get("accessToken").getKey();
+
 
     /**
      * 리프레시 토큰 키
      */
-    String refreshTokenKey = jwtProperties.getProperties().get("refreshToken").getKey();
+
 
     public void authenticateAccessToken(String accessToken){
 
         Jwts.parser()
-                .setSigningKey(accessTokenKey.getBytes(StandardCharsets.UTF_8))
+                .setSigningKey(jwtProperties.getProperties().get("accessToken").getKey().getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(accessToken)
                 .getBody();
     }
 
     public void authenticateRefreshToken(String refreshToken){
-        Jwts.parser().setSigningKey(refreshTokenKey.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
+        Jwts.parser().setSigningKey(jwtProperties.getProperties().get("refreshToken").getKey().getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
     }
 
     public DtoOfUserDataFromJwt getUserData(String accessToken){
 
-        Claims claims = getClaims(accessToken, this.accessTokenKey);
+        Claims claims = getClaims(accessToken, this.jwtProperties.getProperties().get("accessToken").getKey());
 
 
         return DtoOfUserDataFromJwt.builder()
@@ -65,7 +65,7 @@ public class JwtProvider {
 
 
         Instant now = Instant.now();
-        Instant expiredTime = getClaims(refreshToken, this.refreshTokenKey).getExpiration().toInstant();
+        Instant expiredTime = getClaims(refreshToken, this.jwtProperties.getProperties().get("refreshToken").getKey()).getExpiration().toInstant();
 
         long diffTIme = now.until(expiredTime, ChronoUnit.DAYS);
 

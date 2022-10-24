@@ -4,8 +4,6 @@ import lombok.*;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -19,10 +17,7 @@ public class Member {
     @Builder.Default
     private String id = UUID.randomUUID().toString();;
 
-    private String oauth2Id;
-
     private String nickname;
 
-    private List<Integer> list;
 
 }
