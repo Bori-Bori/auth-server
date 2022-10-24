@@ -20,3 +20,14 @@ oauth2:
       tokenUri: "https://kauth.kakao.com/oauth/token"
       userInfoUri: "https://kapi.kakao.com/v2/user/me"
       redirectUri: "http://localhost:8080/login/oauth2/code/kakao"
+
+jwt:
+  properties:
+    accessToken:
+      key: "asdlkfjalds3kjfdsl2kmcsd--ewifwei1"
+      expiredTime: 10080 #7일
+    refreshToken:
+      key: "cndjnd-jnxnc23mvbx-mbvxnmcbvsdifjsdfj12"
+      expiredTime: 43200 #30일
+
+

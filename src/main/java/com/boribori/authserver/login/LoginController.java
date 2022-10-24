@@ -1,5 +1,6 @@
 package com.boribori.authserver.login;
 
+import com.boribori.authserver.jwt.util.JwtProperties;
 import com.boribori.authserver.oauth2.Oauth2Properties;
 import com.boribori.authserver.oauth2.util.OAuth2RequestUtil;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class LoginController {
 
 
     private final OAuth2RequestUtil oAuth2RequestUtil;
+    private final JwtProperties jwtProperties;
 
     private final Oauth2Properties oauth2Properties;
 
@@ -33,6 +35,6 @@ public class LoginController {
 
     @GetMapping("/api/test")
     public String test(){
-        return oauth2Properties.getProperties().get("google").getClientId();
+        return jwtProperties.getProperties().get("accessToken").getKey();
     }
 }
