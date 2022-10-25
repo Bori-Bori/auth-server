@@ -119,7 +119,8 @@ fabric.properties
 
 # application properties
 application-auth.yml
-application-jwt.yml
+application.yml
+index.html
 
 # etc
 *.log

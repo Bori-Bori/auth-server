@@ -1,0 +1,36 @@
+spring:
+  data:
+    cassandra:
+      keyspace-name: member
+      contact-points: localhost
+      port: 9042
+      schema-action: CREATE_IF_NOT_EXISTS
+  redis:
+    port: 6379
+    host: localhost
+
+oauth2:
+  properties:
+    google:
+      clientId: '596969332267-k3eu90eeahl38k5puilsg1op47gq8srk.apps.googleusercontent.com'
+      clientSecret: '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'
+      tokenUri: "https://oauth2.googleapis.com/token"
+      userInfoUri: "https://www.googleapis.com"
+      redirectUri: "http://localhost:8080/login/oauth2/code/google"
+    kakao:
+      clientId: 'de251a4cfa22c0563789d81e137437de'
+      clientSecret: 'XV6V5p4xl9m8SWeUILJpk9H1CuAiYbQC'
+      tokenUri: "https://kauth.kakao.com/oauth/token"
+      userInfoUri: "https://kapi.kakao.com/v2/user/me"
+      redirectUri: "http://localhost:8080/login/oauth2/code/kakao"
+
+jwt:
+  properties:
+    accessToken:
+      key: "asdlkfjalds3kjfdsl2kmcsd--ewifwei1"
+      expiredTime: 10080 #7일
+    refreshToken:
+      key: "cndjnd-jnxnc23mvbx-mbvxnmcbvsdifjsdfj12"
+      expiredTime: 43200 #30일
+
+
