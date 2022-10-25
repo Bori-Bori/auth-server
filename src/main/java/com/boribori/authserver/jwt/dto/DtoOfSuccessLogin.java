@@ -9,4 +9,5 @@ public class DtoOfSuccessLogin {
     private String id;
     private String accessToken;
     private String refreshToken;
+    private String nickname;
 }

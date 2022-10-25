@@ -1,9 +1,6 @@
 package com.boribori.authserver.login;
 
 import com.boribori.authserver.jwt.util.JwtProperties;
-import com.boribori.authserver.oauth2.Oauth2Properties;
-import com.boribori.authserver.oauth2.util.OAuth2RequestUtil;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +15,8 @@ import reactor.core.publisher.Mono;
 public class LoginController {
 
     private final LoginService loginService;
-    private final OAuth2RequestUtil oAuth2RequestUtil;
     private final JwtProperties jwtProperties;
 
-    private final Oauth2Properties oauth2Properties;
 
 //    @GetMapping("/api/login/{target}")
 //    public Mono<ResponseEntity> login(@RequestParam String code, @PathVariable(name = "target")String target){
@@ -43,7 +38,9 @@ public class LoginController {
         return a;
     }
     @GetMapping("/api/test")
-    public String test(){
-        return jwtProperties.getProperties().get("accessToken").getKey();
+    public void test(){
+
+
     }
+
 }

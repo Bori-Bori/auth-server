@@ -5,6 +5,9 @@ spring:
       contact-points: localhost
       port: 9042
       schema-action: CREATE_IF_NOT_EXISTS
+  redis:
+    port: 6379
+    host: localhost
 
 oauth2:
   properties:

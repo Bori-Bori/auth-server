@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 public interface MemberRepository extends ReactiveCassandraRepository<Member, String> {
 
 
-    Mono<Member> findByOauth2Id(Long oauth2Id);
+    //Mono<Member> findByOauth2Id(Long oauth2Id);
 }
