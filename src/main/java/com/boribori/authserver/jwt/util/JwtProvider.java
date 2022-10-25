@@ -1,34 +1,21 @@
 package com.boribori.authserver.jwt.util;
 
 import com.boribori.authserver.jwt.dto.DtoOfUserDataFromJwt;
-import com.boribori.authserver.member.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Base64;
-import java.util.Date;
 
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
 
     private final JwtProperties jwtProperties;
-    /**
-     * 엑세스 토큰 키
-     */
-
-
-    /**
-     * 리프레시 토큰 키
-     */
-
 
     public void authenticateAccessToken(String accessToken){
 
@@ -38,8 +25,10 @@ public class JwtProvider {
                 .getBody();
     }
 
-    public void authenticateRefreshToken(String refreshToken){
+    public Mono<String> authenticateRefreshToken(String refreshToken){
         Jwts.parser().setSigningKey(jwtProperties.getProperties().get("refreshToken").getKey().getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
+
+        return Mono.just(refreshToken);
     }
 
     public DtoOfUserDataFromJwt getUserData(String accessToken){
