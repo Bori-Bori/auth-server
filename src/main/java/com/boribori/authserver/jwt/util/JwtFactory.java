@@ -18,24 +18,7 @@ import java.util.Date;
 public class JwtFactory {
 
     private final JwtProperties jwtProperties;
-    /**
-     * JWT 의 엑세스 토큰 키
-     */
 
-
-    /**
-     * JWT 의 리프레시 토큰 키
-     */
-
-
-    /**
-     * 엑세스 토큰 유효 기간
-     */
-
-
-    /**
-     * 리프레시 토큰 유효 기간
-     */
 
 
     /**
@@ -97,11 +80,11 @@ public class JwtFactory {
                 member ->  {
                     String accessToken = createAccessToken(member);
                     String refreshToken = createRefreshToken(accessToken);
-
                     return Mono.just(DtoOfSuccessLogin.builder()
                             .id(member.getId())
                             .accessToken(accessToken)
                             .refreshToken(refreshToken)
+                            .nickname(member.getNickname())
                             .build());
                 }
 

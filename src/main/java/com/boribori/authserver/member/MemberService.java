@@ -18,8 +18,6 @@ public class MemberService {
 
         return userProfileMono.flatMap(
                 userProfile -> {
-                    System.out.println("aaaaa = " + userProfile.getProperties().getNickname());
-
                     return getMemberEntity(userProfile.getId())
                             .switchIfEmpty(Mono.defer(() ->
                                  saveMemberEntity(userProfileMono))
