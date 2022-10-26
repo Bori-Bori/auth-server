@@ -28,9 +28,9 @@ jwt:
   properties:
     accessToken:
       key: "asdlkfjalds3kjfdsl2kmcsd--ewifwei1"
-      expiredTime: 10080 #7일
+      expiredTime: 7 #7일
     refreshToken:
       key: "cndjnd-jnxnc23mvbx-mbvxnmcbvsdifjsdfj12"
-      expiredTime: 43200 #30일
+      expiredTime: 1 #30일
 
 

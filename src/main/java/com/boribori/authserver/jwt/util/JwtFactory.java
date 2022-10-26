@@ -13,9 +13,13 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
+
+import static java.sql.Timestamp.valueOf;
+
 
 @RequiredArgsConstructor
 @Component
@@ -54,12 +58,14 @@ public class JwtFactory {
         Claims claims = Jwts.claims().setSubject(member.getId());
         claims.put("nickname", member.getNickname());
 
-        Date now = new Date();
+        LocalDateTime nowTemp = LocalDateTime.now();
+        Date now = valueOf(nowTemp);
+        Long validTime = this.jwtProperties.getProperties().get("accessToken").getExpiredTime();
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + this.jwtProperties.getProperties().get("accessToken").getExpiredTime()))
+                .setExpiration(valueOf(nowTemp.plusDays(validTime)))
                 .signWith(SignatureAlgorithm.HS256, this.encodedAccessKey)
                 .compact();
     }
@@ -71,12 +77,13 @@ public class JwtFactory {
      */
     public DtoOfCreateRefreshToken createRefreshToken(String accessToken){
         String refreshTokenId = UUID.randomUUID().toString();
-        Date now = new Date();
-
+        LocalDateTime nowTemp = LocalDateTime.now();
+        Date now = valueOf(nowTemp);
+        Long validTime = this.jwtProperties.getProperties().get("refreshToken").getExpiredTime();
         return DtoOfCreateRefreshToken.builder().refreshToken(Jwts.builder()
                 .setSubject(refreshTokenId)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + this.jwtProperties.getProperties().get("refreshToken").getExpiredTime()))
+                .setExpiration(valueOf(nowTemp.plusMonths(validTime)))
                 .signWith(SignatureAlgorithm.HS256, this.encodedRefreshKey)
                 .compact())
                 .id(refreshTokenId)
@@ -106,12 +113,14 @@ public class JwtFactory {
         Claims claims = Jwts.claims().setSubject(id);
         claims.put("nickname", nickname);
 
-        Date now = new Date();
+        LocalDateTime nowTemp = LocalDateTime.now();
+        Date now = valueOf(nowTemp);
+        Long validTime = this.jwtProperties.getProperties().get("accessToken").getExpiredTime();
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + this.jwtProperties.getProperties().get("accessToken").getExpiredTime()))
+                .setExpiration(valueOf(nowTemp.plusDays(validTime)))
                 .signWith(SignatureAlgorithm.HS256, this.encodedAccessKey)
                 .compact();
     }

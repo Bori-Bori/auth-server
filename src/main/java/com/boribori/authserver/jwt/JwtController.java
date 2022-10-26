@@ -18,25 +18,16 @@ public class JwtController {
 
     @PostMapping("/api/refresh")
     public Mono<ResponseEntity> refresh(@RequestParam String refreshToken){
-
-//        jwtService.refreshToken(Mono.just(refreshToken))
-//                .flatMap(response -> ResponseEntity.status(HttpStatus.OK)
-//                        .body(Response.builder()
-//                                        .status(Response.Status.builder()
-//                                                .msg("성공적으로 갱신되었습니다.")
-//                                                .build())
-//                                        .content(response)
-//                                        .build()))).cast(ResponseEntity.class);
         return jwtService.refreshToken(Mono.just(refreshToken))
-                .map(response -> {
-                    System.out.println("여기 실행 response = " + response.getId());
-                    return ResponseEntity.status(HttpStatus.OK)
-                            .body(Response.builder()
-                                    .status(Response.Status.builder()
-                                            .msg("성공적으로 갱신되었습니다.")
-                                            .build())
-                                    .content(response)
-                                    .build());
-                }).cast(ResponseEntity.class);
+                .switchIfEmpty(Mono.defer(() -> {
+                    throw new RuntimeException();
+                }))
+                .map(response -> ResponseEntity.status(HttpStatus.OK)
+                        .body(Response.builder()
+                                .status(Response.Status.builder()
+                                        .msg("성공적으로 갱신되었습니다.")
+                                        .build())
+                                .content(response)
+                                .build())).cast(ResponseEntity.class);
     }
 }
