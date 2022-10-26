@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class DtoOfSuccessLogin {
     private String id;
+    private String tokenId;
     private String accessToken;
     private String refreshToken;
     private String nickname;

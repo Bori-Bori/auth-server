@@ -1,59 +1,68 @@
 package com.boribori.authserver.jwt.util;
 
+import com.boribori.authserver.jwt.RefreshToken;
+import com.boribori.authserver.jwt.dto.DtoOfSuccessLogin;
 import com.boribori.authserver.jwt.dto.DtoOfUserDataFromJwt;
-import com.boribori.authserver.member.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.Date;
 
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
 
     private final JwtProperties jwtProperties;
-    /**
-     * 엑세스 토큰 키
-     */
+    private final JwtFactory jwtFactory;
 
+    private String encodedRefreshKey;
+    private String encodedAccessKey;
 
-    /**
-     * 리프레시 토큰 키
-     */
-
+    @PostConstruct
+    protected void init(){
+        encodedAccessKey = Base64.getEncoder().encodeToString(this.jwtProperties.getProperties().get("accessToken").getKey().getBytes());
+        encodedRefreshKey = Base64.getEncoder().encodeToString(this.jwtProperties.getProperties().get("refreshToken").getKey().getBytes());
+    }
 
     public void authenticateAccessToken(String accessToken){
 
         Jwts.parser()
-                .setSigningKey(jwtProperties.getProperties().get("accessToken").getKey().getBytes(StandardCharsets.UTF_8))
+                .setSigningKey(encodedAccessKey)
                 .parseClaimsJws(accessToken)
                 .getBody();
     }
 
-    public void authenticateRefreshToken(String refreshToken){
-        Jwts.parser().setSigningKey(jwtProperties.getProperties().get("refreshToken").getKey().getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
+    public Mono<DtoOfSuccessLogin> refresh(Mono<RefreshToken> refreshTokenMono){
+
+        // refresh 유효 체크
+        // refresh 갱신 체크
+
+       return refreshTokenMono
+                .flatMap(v -> {
+                    if(checkRenewRefreshToken(v.getRefreshToken(), 3L)){
+                        return jwtFactory.refreshBoth(refreshTokenMono);
+                    }
+                    Mono<DtoOfSuccessLogin> dto = jwtFactory.refreshAccessToken(refreshTokenMono)
+                            .flatMap(dtoOfSuccessLogin -> Mono.just(dtoOfSuccessLogin));
+                    return dto;
+                });
+
     }
 
-    public DtoOfUserDataFromJwt getUserData(String accessToken){
+    public Mono<String> authenticateRefreshToken(String refreshToken){
+        Jwts.parser().setSigningKey(encodedRefreshKey).parseClaimsJws(refreshToken).getBody();
 
-        Claims claims = getClaims(accessToken, this.jwtProperties.getProperties().get("accessToken").getKey());
-
-
-        return DtoOfUserDataFromJwt.builder()
-                .id(claims.getSubject())
-                .nickname(claims.get("nickname").toString())
-                .build();
-
-
+        return Mono.just(refreshToken);
     }
+
+
 
     /**
      * 리프레시 토큰을 갱신해야하는지 판별하는 메서드
@@ -83,5 +92,22 @@ public class JwtProvider {
                 .setSigningKey(tokenKey.getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private Mono<Claims> getClaimsMono(String token, String tokenKey){
+        return Mono.just(Jwts.parser()
+                .setSigningKey(tokenKey.getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(token)
+                .getBody());
+    }
+
+    public Mono<String> getRefreshTokenSubject(Mono<String> token){
+        return token
+                .flatMap(value -> getClaimsMono(value, this.jwtProperties.getProperties().get("refreshToken").getKey())
+                        .map(claims -> {
+                            if(claims.isEmpty()){
+                            }
+                            return claims.getSubject();
+                        }));
     }
 }
