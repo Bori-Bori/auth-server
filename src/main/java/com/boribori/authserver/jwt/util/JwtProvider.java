@@ -1,5 +1,7 @@
 package com.boribori.authserver.jwt.util;
 
+import com.boribori.authserver.jwt.RefreshToken;
+import com.boribori.authserver.jwt.dto.DtoOfSuccessLogin;
 import com.boribori.authserver.jwt.dto.DtoOfUserDataFromJwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -7,42 +9,60 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 
 @RequiredArgsConstructor
 @Component
 public class JwtProvider {
 
     private final JwtProperties jwtProperties;
+    private final JwtFactory jwtFactory;
+
+    private String encodedRefreshKey;
+    private String encodedAccessKey;
+
+    @PostConstruct
+    protected void init(){
+        encodedAccessKey = Base64.getEncoder().encodeToString(this.jwtProperties.getProperties().get("accessToken").getKey().getBytes());
+        encodedRefreshKey = Base64.getEncoder().encodeToString(this.jwtProperties.getProperties().get("refreshToken").getKey().getBytes());
+    }
 
     public void authenticateAccessToken(String accessToken){
 
         Jwts.parser()
-                .setSigningKey(jwtProperties.getProperties().get("accessToken").getKey().getBytes(StandardCharsets.UTF_8))
+                .setSigningKey(encodedAccessKey)
                 .parseClaimsJws(accessToken)
                 .getBody();
     }
 
+    public Mono<DtoOfSuccessLogin> refresh(Mono<RefreshToken> refreshTokenMono){
+
+        // refresh 유효 체크
+        // refresh 갱신 체크
+
+       return refreshTokenMono
+                .flatMap(v -> {
+                    if(checkRenewRefreshToken(v.getRefreshToken(), 3L)){
+                        return jwtFactory.refreshBoth(refreshTokenMono);
+                    }
+                    Mono<DtoOfSuccessLogin> dto = jwtFactory.refreshAccessToken(refreshTokenMono)
+                            .flatMap(dtoOfSuccessLogin -> Mono.just(dtoOfSuccessLogin));
+                    return dto;
+                });
+
+    }
+
     public Mono<String> authenticateRefreshToken(String refreshToken){
-        Jwts.parser().setSigningKey(jwtProperties.getProperties().get("refreshToken").getKey().getBytes(StandardCharsets.UTF_8)).parseClaimsJws(refreshToken).getBody();
+        Jwts.parser().setSigningKey(encodedRefreshKey).parseClaimsJws(refreshToken).getBody();
 
         return Mono.just(refreshToken);
     }
 
-    public DtoOfUserDataFromJwt getUserData(String accessToken){
 
-        Claims claims = getClaims(accessToken, this.jwtProperties.getProperties().get("accessToken").getKey());
-
-
-        return DtoOfUserDataFromJwt.builder()
-                .id(claims.getSubject())
-                .nickname(claims.get("nickname").toString())
-                .build();
-
-
-    }
 
     /**
      * 리프레시 토큰을 갱신해야하는지 판별하는 메서드
@@ -72,5 +92,28 @@ public class JwtProvider {
                 .setSigningKey(tokenKey.getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private Mono<Claims> getClaimsMono(String token, String tokenKey){
+        return Mono.just(Jwts.parser()
+                .setSigningKey(tokenKey.getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(token)
+                .getBody());
+    }
+
+    public Mono<String> getRefreshTokenSubject(Mono<String> token){
+        return token
+                .flatMap(value -> {
+                    return getClaimsMono(value, this.jwtProperties.getProperties().get("refreshToken").getKey())
+                            .map(claims -> {
+                                if(claims.isEmpty()){
+                                    System.out.println("claims = " + claims.getSubject());
+                                }
+                                return claims.getSubject();
+                            });
+                });
+//        return Mono.just(getClaims(token,
+//                this.jwtProperties.
+//                        getProperties().get("refreshToken").getKey()).getSubject());
     }
 }

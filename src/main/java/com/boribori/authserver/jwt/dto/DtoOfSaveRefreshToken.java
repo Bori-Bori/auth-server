@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class DtoOfSuccessLogin {
+public class DtoOfSaveRefreshToken {
     private String id;
-    private String tokenId;
+    private String userId;
     private String accessToken;
     private String refreshToken;
     private String nickname;

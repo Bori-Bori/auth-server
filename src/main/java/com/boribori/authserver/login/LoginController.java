@@ -1,13 +1,12 @@
 package com.boribori.authserver.login;
 
+import com.boribori.authserver.jwt.RefreshTokenRepository;
 import com.boribori.authserver.jwt.util.JwtProperties;
+import com.boribori.authserver.login.dto.Sample;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
@@ -16,6 +15,7 @@ public class LoginController {
 
     private final LoginService loginService;
     private final JwtProperties jwtProperties;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
 //    @GetMapping("/api/login/{target}")
@@ -38,9 +38,9 @@ public class LoginController {
         return a;
     }
     @GetMapping("/api/test")
-    public void test(){
-
-
+    public Mono<String> test(@RequestParam String abc){
+       return refreshTokenRepository.findById(abc)
+                .flatMap(p -> refreshTokenRepository.deleteById(p.getId())).thenReturn("Rmx");
     }
 
 }

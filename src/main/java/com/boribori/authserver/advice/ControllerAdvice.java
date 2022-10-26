@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler(MalformedJwtException.class)
+    //@ExceptionHandler(MalformedJwtException.class)
     public Mono<ResponseEntity> handleMalformedJwtException(){
         return Mono.just(ResponseEntity.status(HttpStatus.OK).body(Response.
                 builder()
@@ -22,7 +22,7 @@ public class ControllerAdvice {
                 );
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
+    //@ExceptionHandler(ExpiredJwtException.class)
     public Mono<ResponseEntity> handleExpiredJwtException(){
         return Mono.just(ResponseEntity.status(HttpStatus.OK).body(Response.
                 builder()
