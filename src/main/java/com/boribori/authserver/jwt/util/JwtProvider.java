@@ -103,17 +103,11 @@ public class JwtProvider {
 
     public Mono<String> getRefreshTokenSubject(Mono<String> token){
         return token
-                .flatMap(value -> {
-                    return getClaimsMono(value, this.jwtProperties.getProperties().get("refreshToken").getKey())
-                            .map(claims -> {
-                                if(claims.isEmpty()){
-                                    System.out.println("claims = " + claims.getSubject());
-                                }
-                                return claims.getSubject();
-                            });
-                });
-//        return Mono.just(getClaims(token,
-//                this.jwtProperties.
-//                        getProperties().get("refreshToken").getKey()).getSubject());
+                .flatMap(value -> getClaimsMono(value, this.jwtProperties.getProperties().get("refreshToken").getKey())
+                        .map(claims -> {
+                            if(claims.isEmpty()){
+                            }
+                            return claims.getSubject();
+                        }));
     }
 }

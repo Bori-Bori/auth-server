@@ -14,19 +14,6 @@ import reactor.core.publisher.Mono;
 public class LoginController {
 
     private final LoginService loginService;
-    private final JwtProperties jwtProperties;
-    private final RefreshTokenRepository refreshTokenRepository;
-
-
-//    @GetMapping("/api/login/{target}")
-//    public Mono<ResponseEntity> login(@RequestParam String code, @PathVariable(name = "target")String target){
-//        Mono<ResponseEntity> a = oAuth2RequestUtil.requestAuth(code, target)
-//                .map(response ->
-//                    ResponseEntity.status(HttpStatus.OK).body(response)
-//                ).cast(ResponseEntity.class);
-//
-//        return a;
-//    }
 
     @GetMapping("/api/login/{target}")
     public Mono<ResponseEntity> login(@RequestParam String code, @PathVariable(name = "target")String target){
@@ -37,10 +24,4 @@ public class LoginController {
 
         return a;
     }
-    @GetMapping("/api/test")
-    public Mono<String> test(@RequestParam String abc){
-       return refreshTokenRepository.findById(abc)
-                .flatMap(p -> refreshTokenRepository.deleteById(p.getId())).thenReturn("Rmx");
-    }
-
 }

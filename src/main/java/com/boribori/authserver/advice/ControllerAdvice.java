@@ -1,6 +1,7 @@
 package com.boribori.authserver.advice;
 
 import com.boribori.authserver.common.Response;
+import com.boribori.authserver.exception.NotFoundRefreshTokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
@@ -11,9 +12,9 @@ import reactor.core.publisher.Mono;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    //@ExceptionHandler(MalformedJwtException.class)
+    @ExceptionHandler({MalformedJwtException.class, NotFoundRefreshTokenException.class})
     public Mono<ResponseEntity> handleMalformedJwtException(){
-        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(Response.
+        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Response.
                 builder()
                 .status(Response.Status.builder()
                         .msg("Invalid Token").build())
@@ -22,9 +23,9 @@ public class ControllerAdvice {
                 );
     }
 
-    //@ExceptionHandler(ExpiredJwtException.class)
+    @ExceptionHandler(ExpiredJwtException.class)
     public Mono<ResponseEntity> handleExpiredJwtException(){
-        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(Response.
+        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Response.
                 builder()
                 .status(Response.Status.builder()
                         .msg("Expired Token").build())
@@ -32,4 +33,6 @@ public class ControllerAdvice {
                 .build())
         );
     }
+
+
 }

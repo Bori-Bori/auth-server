@@ -1,5 +1,6 @@
 package com.boribori.authserver.jwt;
 
+import com.boribori.authserver.exception.NotFoundRefreshTokenException;
 import com.boribori.authserver.jwt.dto.DtoOfSaveRefreshToken;
 import com.boribori.authserver.jwt.dto.DtoOfSuccessLogin;
 import com.boribori.authserver.jwt.util.JwtFactory;
@@ -36,51 +37,36 @@ public class JwtService {
                 .id(dto.getId())
                 .nickname(dto.getNickname())
                 .build())
-                .flatMap(entity -> {
-                    return Mono.just(DtoOfSuccessLogin.builder()
-                                    .tokenId(entity.getId())
-                            .refreshToken(dto.getRefreshToken())
-                            .accessToken(dto.getAccessToken())
-                            .id(dto.getUserId())
-                            .nickname(dto.getNickname())
-                            .build());
-        });
+                .flatMap(entity -> Mono.just(DtoOfSuccessLogin.builder()
+                                .tokenId(entity.getId())
+                        .refreshToken(dto.getRefreshToken())
+                        .accessToken(dto.getAccessToken())
+                        .id(dto.getUserId())
+                        .nickname(dto.getNickname())
+                        .build()));
     }
 
     public Mono<DtoOfSuccessLogin> refreshToken(Mono<String> refreshToken){
 
 
         return refreshToken
-                .map(token -> {
-                    System.out.println("1번요~ = " + token);
-                    return jwtProvider.authenticateRefreshToken(token);
-                })
-                .flatMap(token2 -> {
-                    System.out.println("1.5");
-                    return jwtProvider.getRefreshTokenSubject(token2);
-                })
-                .flatMap(subject -> {
-                    System.out.println("2번요 ~" + subject);
-                    return refreshTokenRepository.findById(subject);
-                })
-                .transform(refreshTokenMono -> {
-                    return jwtProvider.refresh(refreshTokenMono);
-                })
-                .flatMap(response -> {
-                    System.out.println("token id = " + response.getTokenId());
-                    return refreshTokenRepository.findById(response.getTokenId())
-                                    .flatMap(entity -> refreshTokenRepository.deleteById(entity.getId()))
-                                            .thenReturn(response);
-                })
-                .flatMap(response -> {
-                    return refreshTokenRepository.save(RefreshToken.builder()
-                            .refreshToken(response.getRefreshToken())
-                            .userId(response.getId())
-                            .id(response.getTokenId())
-                            .nickname(response.getNickname())
-                            .build())
-                            .thenReturn(response);
-                });
+                .map(token -> jwtProvider.authenticateRefreshToken(token))
+                .flatMap(token2 -> jwtProvider.getRefreshTokenSubject(token2))
+                .flatMap(subject -> refreshTokenRepository.findById(subject))
+                .switchIfEmpty(Mono.defer(() -> {
+                    throw new NotFoundRefreshTokenException("invalid token");
+                }))
+                .transform(refreshTokenMono -> jwtProvider.refresh(refreshTokenMono))
+                .flatMap(response -> refreshTokenRepository.findById(response.getTokenId())
+                                .flatMap(entity -> refreshTokenRepository.deleteById(entity.getId()))
+                                        .thenReturn(response))
+                .flatMap(response -> refreshTokenRepository.save(RefreshToken.builder()
+                        .refreshToken(response.getRefreshToken())
+                        .userId(response.getId())
+                        .id(response.getTokenId())
+                        .nickname(response.getNickname())
+                        .build())
+                        .thenReturn(response));
 
     }
 
