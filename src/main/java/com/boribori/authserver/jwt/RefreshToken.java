@@ -14,9 +14,12 @@ import java.util.UUID;
 @Table("refresh_token")
 public class RefreshToken {
     @PrimaryKey()
-    @Builder.Default
-    private String id = UUID.randomUUID().toString();
+    private String id;
     private String userId;
     private String nickname;
     private String refreshToken;
+
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
 }
