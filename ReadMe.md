@@ -42,7 +42,8 @@ $ ./gradlew build
 
 # Architecture
 
-## 서버 Architecture
+## Server Architecture
+<img width="854" alt="스크린샷 2022-10-27 오전 11 16 06" src="https://user-images.githubusercontent.com/79268661/198176140-6aa8060e-77b6-492f-90a2-d46f42bb5129.png">
 
 
-## 배포 Architecture
+## Cloud Architecture
