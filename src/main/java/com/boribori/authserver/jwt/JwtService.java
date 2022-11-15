@@ -3,9 +3,11 @@ package com.boribori.authserver.jwt;
 import com.boribori.authserver.exception.NotFoundRefreshTokenException;
 import com.boribori.authserver.jwt.dto.DtoOfSaveRefreshToken;
 import com.boribori.authserver.jwt.dto.DtoOfSuccessLogin;
+import com.boribori.authserver.jwt.dto.TokenData;
 import com.boribori.authserver.jwt.util.JwtFactory;
 import com.boribori.authserver.jwt.util.JwtProvider;
 import com.boribori.authserver.member.Member;
+import com.boribori.authserver.util.ParsingUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -16,11 +18,9 @@ public class JwtService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private final JwtProvider jwtProvider;
+    private final ParsingUtil parsingUtil;
 
-    /**
-     * 레디스 처리 필요
-     */
+    private final JwtProvider jwtProvider;
 
     private final JwtFactory jwtFactory;
 
@@ -74,4 +74,12 @@ public class JwtService {
         return refreshTokenRepository.findById(id);
     }
 
+    public Mono<TokenData> getUserData(String token){
+        return parsingUtil.getToken(token)
+                .flatMap(v ->
+                    jwtProvider.authenticateAccessToken(v)
+                ).flatMap(v2 ->
+                    jwtProvider.getTokenData(v2)
+                );
+    }
 }
