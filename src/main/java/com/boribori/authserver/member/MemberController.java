@@ -1,6 +1,7 @@
 package com.boribori.authserver.member;
 
 import com.boribori.authserver.common.Response;
+import com.boribori.authserver.member.event.MemberEventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 public class MemberController {
     private final MemberService memberService;
+
 
     @PostMapping
     public Mono<ResponseEntity<Response>> updateNickname(@RequestHeader("Authorization") String token, @RequestBody String nickname){

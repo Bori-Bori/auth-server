@@ -3,6 +3,7 @@ package com.boribori.authserver.member;
 import com.boribori.authserver.jwt.JwtService;
 import com.boribori.authserver.jwt.dto.TokenData;
 import com.boribori.authserver.member.dto.DtoOfUpdateNickname;
+import com.boribori.authserver.member.event.MemberEventPublisher;
 import com.boribori.authserver.oauth2.dto.DtoOfOauth2UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class MemberService {
 
-
+    private final MemberEventPublisher memberEventPublisher;
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
 
@@ -49,6 +50,10 @@ public class MemberService {
         return jwtService.getUserData(header)
                 .flatMap(tokenData -> memberRepository.findById(tokenData.getUserId()))
                 .flatMap(memberEntity -> Mono.just(memberEntity.updateNickname(nickname)))
+                .flatMap(member -> {
+                    //memberEventPublisher.sendEventUpdateNickname(member);
+                            return Mono.just(member);
+                })
                 .flatMap(updatedMemberEntity ->
                         Mono.just(DtoOfUpdateNickname.builder()
                                 .id(updatedMemberEntity.getId())
