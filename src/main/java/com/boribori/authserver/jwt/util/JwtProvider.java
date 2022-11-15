@@ -3,6 +3,7 @@ package com.boribori.authserver.jwt.util;
 import com.boribori.authserver.jwt.RefreshToken;
 import com.boribori.authserver.jwt.dto.DtoOfSuccessLogin;
 import com.boribori.authserver.jwt.dto.DtoOfUserDataFromJwt;
+import com.boribori.authserver.jwt.dto.TokenData;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +32,13 @@ public class JwtProvider {
         encodedRefreshKey = Base64.getEncoder().encodeToString(this.jwtProperties.getProperties().get("refreshToken").getKey().getBytes());
     }
 
-    public void authenticateAccessToken(String accessToken){
+    public Mono<String> authenticateAccessToken(String accessToken){
 
         Jwts.parser()
                 .setSigningKey(encodedAccessKey)
                 .parseClaimsJws(accessToken)
                 .getBody();
+        return Mono.just(accessToken);
     }
 
     public Mono<DtoOfSuccessLogin> refresh(Mono<RefreshToken> refreshTokenMono){
@@ -109,5 +111,17 @@ public class JwtProvider {
                             }
                             return claims.getSubject();
                         }));
+    }
+
+    public Mono<TokenData> getTokenData(String accessToken){
+        Claims claims = getClaims(accessToken, this.jwtProperties.getProperties().get("accessToken").getKey());
+
+        return Mono.just(
+                TokenData.builder()
+                        .userId(claims.getSubject())
+                        .nickname((String) claims.get("nickname"))
+                        .build()
+        );
+
     }
 }

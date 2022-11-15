@@ -19,5 +19,14 @@ public class Member {
 
     private String nickname;
 
-
+    public Member updateNickname(String nickname){
+        if (nickname == null){
+            return this;
+        }
+        if(nickname.equals("")){
+            return this;
+        }
+        this.nickname = nickname;
+        return this;
+    }
 }

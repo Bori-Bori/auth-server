@@ -32,5 +32,7 @@ jwt:
     refreshToken:
       key: "cndjnd-jnxnc23mvbx-mbvxnmcbvsdifjsdfj12"
       expiredTime: 1 #30일
+server:
+  port: 8080
 
 
