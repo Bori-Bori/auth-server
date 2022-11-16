@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Getter
 public class DtoOfUpdateNicknameEvent{
 
-    private String nickname;
     private String id;
+    private String nickname;
 
 }

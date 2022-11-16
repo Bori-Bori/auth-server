@@ -25,17 +25,20 @@ public class MemberEventPublisher {
 //
 //    }
 
-    public void sendEventUpdateNickname(DtoOfUpdateNicknameEvent memberEntity) throws JsonProcessingException {
+    public void sendEventUpdateNickname(Member memberEntity){
 
-        System.out.println("publish 실행 ~");
         DtoOfUpdateNicknameEvent eventDto = DtoOfUpdateNicknameEvent.builder()
                 .id(memberEntity.getId())
                 .nickname(memberEntity.getNickname())
                 .build();
         ObjectMapper om = new ObjectMapper();
+        try {
+            String json = om.writeValueAsString(eventDto);
+            this.kafkaTemplate.send(TOPIC, json);
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
 
-        String json = om.writeValueAsString(eventDto);
-        this.kafkaTemplate.send(TOPIC, json);
 
 
     }

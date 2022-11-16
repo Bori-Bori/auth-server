@@ -35,16 +35,16 @@ public class ControllerAdvice {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public Mono<ResponseEntity> handleCommonException(){
-        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.
-                builder()
-                .status(Response.Status.builder()
-                        .msg("Bad Request").build())
-                .content(null)
-                .build())
-        );
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public Mono<ResponseEntity> handleCommonException(){
+//        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.
+//                builder()
+//                .status(Response.Status.builder()
+//                        .msg("Bad Request").build())
+//                .content(null)
+//                .build())
+//        );
+//    }
 
 
 

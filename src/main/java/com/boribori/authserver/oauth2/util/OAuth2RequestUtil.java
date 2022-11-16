@@ -41,7 +41,6 @@ public class OAuth2RequestUtil {
     }
 
     public Mono<DtoOfOauth2UserProfile> getUserProfile(String accessToken, String userInfoUri){
-        System.out.println("access = " + accessToken);
         WebClient webClient = WebClient.builder().baseUrl(userInfoUri).build();
         return webClient.get()
                 .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
