@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberEventPublisher {
 
-    public static final String TOPIC = "bori";
+    public static final String TOPIC = "nickname";
     private final KafkaTemplate<String, String> kafkaTemplate;
 
 //    public void sendEventUpdateNickname(Member memberEntity){

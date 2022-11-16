@@ -4,6 +4,7 @@ import com.boribori.authserver.jwt.JwtService;
 import com.boribori.authserver.jwt.dto.TokenData;
 import com.boribori.authserver.member.dto.DtoOfUpdateNickname;
 import com.boribori.authserver.member.event.MemberEventPublisher;
+import com.boribori.authserver.member.event.dto.EventOfPublishReplyAlarm;
 import com.boribori.authserver.oauth2.dto.DtoOfOauth2UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,19 @@ public class MemberService {
                                 .nickname(updatedMemberEntity.getNickname())
                                 .build()));
 
+    }
+
+    public void updateAlarm(EventOfPublishReplyAlarm event){
+        // 이벤트에 해당하는 user 조회
+
+        // 이벤트 저장
+
+
+    }
+
+    public void getEvent(){
+        // 이벤트 조회
+        // 조회된 이벤트 식별자 변경
     }
 
 }
