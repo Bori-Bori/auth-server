@@ -24,7 +24,9 @@ public class MemberService {
                 userProfile -> {
                     return getMemberEntity(userProfile.getId())
                             .switchIfEmpty(Mono.defer(() ->
-                                 saveMemberEntity(userProfileMono))
+                            {
+                                return saveMemberEntity(userProfileMono);
+                            })
                             );
                 }
         );
@@ -51,8 +53,8 @@ public class MemberService {
                 .flatMap(tokenData -> memberRepository.findById(tokenData.getUserId()))
                 .flatMap(memberEntity -> Mono.just(memberEntity.updateNickname(nickname)))
                 .flatMap(member -> {
-                    //memberEventPublisher.sendEventUpdateNickname(member);
-                            return Mono.just(member);
+                    memberEventPublisher.sendEventUpdateNickname(member);
+                    return memberRepository.save(member);
                 })
                 .flatMap(updatedMemberEntity ->
                         Mono.just(DtoOfUpdateNickname.builder()
@@ -60,10 +62,6 @@ public class MemberService {
                                 .nickname(updatedMemberEntity.getNickname())
                                 .build()));
 
-        //find by ㅎㅐ서 entity 찾기
-        //닉네임 update
-        // event 보내기
-        //수정 완료 보내기
     }
 
 }

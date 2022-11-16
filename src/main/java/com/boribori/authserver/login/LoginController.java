@@ -23,12 +23,12 @@ public class LoginController {
 
     @GetMapping("/api/login/{target}")
     public Mono<ResponseEntity> login(@RequestParam String code, @PathVariable(name = "target")String target){
-        Mono<ResponseEntity> a = loginService.login(code, target)
+        Mono<ResponseEntity> result = loginService.login(code, target)
                 .map(response ->
                         ResponseEntity.status(HttpStatus.OK).body(response)
                 ).cast(ResponseEntity.class);
 
-        return a;
+        return result;
     }
 
 
@@ -38,7 +38,7 @@ public class LoginController {
                 .id("testId")
                 .nickname("testNickname")
                 .build();
-        memberEventPublisher.sendEventUpdateNickname(dto);
+        //memberEventPublisher.sendEventUpdateNickname(dto);
         return Mono.just("success");
     }
 }

@@ -1,6 +1,7 @@
 package com.boribori.authserver.member;
 
 import com.boribori.authserver.common.Response;
+import com.boribori.authserver.member.dto.DtoOfUpdateNickname;
 import com.boribori.authserver.member.event.MemberEventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,9 @@ public class MemberController {
     private final MemberService memberService;
 
 
-    @PostMapping
-    public Mono<ResponseEntity<Response>> updateNickname(@RequestHeader("Authorization") String token, @RequestBody String nickname){
-
-        return memberService.updateNickname(token, nickname)
+    @PostMapping("/api/member/nickname")
+    public Mono<ResponseEntity<Response>> updateNickname(@RequestHeader("Authorization") String token, @RequestBody DtoOfUpdateNickname dtoOfUpdateNickname){
+        return memberService.updateNickname(token, dtoOfUpdateNickname.getNickname())
                 .flatMap(v -> Mono.just(
                         ResponseEntity.ok(Response.builder()
                                 .status(Response.Status.builder()
