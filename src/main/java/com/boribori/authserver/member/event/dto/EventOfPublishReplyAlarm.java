@@ -8,11 +8,20 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class EventOfPublishReplyAlarm {
+    private String commentUserId;
 
-    private String userId;
+    private String replyUserNickname;
     private String commentId;
+    private String commentContent;
+
+
     private String replyId;
-    private String content;
+    private String replyContent;
+
+    private String boardId;
+
+    private int page;
+
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;

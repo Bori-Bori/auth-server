@@ -1,5 +1,6 @@
 package com.boribori.authserver.member;
 
+import com.boribori.authserver.alarm.Alarm;
 import com.boribori.authserver.jwt.JwtService;
 import com.boribori.authserver.jwt.dto.TokenData;
 import com.boribori.authserver.member.dto.DtoOfUpdateNickname;
@@ -9,6 +10,9 @@ import com.boribori.authserver.oauth2.dto.DtoOfOauth2UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 @RequiredArgsConstructor
 @Service
@@ -67,9 +71,24 @@ public class MemberService {
 
     public void updateAlarm(EventOfPublishReplyAlarm event){
         // 이벤트에 해당하는 user 조회
-
-        // 이벤트 저장
-
+        memberRepository.findById(event.getCommentId())
+                .flatMap(v -> {
+                    v.addAlarm(
+                            Alarm.builder()
+                                    .replyUserNickname(event.getReplyUserNickname())
+                                    .commentId(event.getCommentId())
+                                    .commentContent(event.getCommentContent())
+                                    .replyId(event.getReplyId())
+                                    .replyContent(event.getReplyContent())
+                                    .boardId(event.getBoardId())
+                                    .page(event.getPage())
+                                    .isChecked(false)
+                                    .createdAt(event.getCreatedAt())
+                                    .build()
+                    );
+                    memberRepository.insert(v).subscribe();
+                    return null;
+                }).subscribe();
 
     }
 
@@ -77,5 +96,7 @@ public class MemberService {
         // 이벤트 조회
         // 조회된 이벤트 식별자 변경
     }
+
+
 
 }
