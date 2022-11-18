@@ -1,8 +1,7 @@
 package com.boribori.authserver.member;
 
-import com.boribori.authserver.alarm.Alarm;
+import com.boribori.authserver.notification.Notification;
 import lombok.*;
-import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -26,8 +25,8 @@ public class Member {
     private String nickname;
 
 
-    @Column(value = "alarms")
-    private List<Alarm> alarms = new ArrayList<>();
+    @Column(value = "notifications")
+    private List<Notification> notifications = new ArrayList<>();
 
     public Member updateNickname(String nickname){
         if (nickname == null){
@@ -40,10 +39,10 @@ public class Member {
         return this;
     }
 
-    public void addAlarm(Alarm alarm){
-        if(this.alarms == null){
-            this.alarms = new ArrayList<>();
+    public void addNotification(Notification notification){
+        if(this.notifications == null){
+            this.notifications = new ArrayList<>();
         }
-        this.alarms.add(alarm);
+        this.notifications.add(notification);
     }
 }

@@ -1,28 +1,35 @@
-package com.boribori.authserver.member.event.dto;
+package com.boribori.authserver.notification;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@ToString
+@Builder
 @NoArgsConstructor
-public class EventOfPublishReplyAlarm {
-    private String commentUserId;
-
+@AllArgsConstructor
+@UserDefinedType
+public class Notification {
     private String replyUserNickname;
+
     private String commentId;
     private String commentContent;
 
-
     private String replyId;
     private String replyContent;
+
 
     private String boardId;
 
     private int page;
 
+    private boolean isChecked = false;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
+
+    public void updateIsChecked(){
+        this.isChecked = true;
+    }
 }

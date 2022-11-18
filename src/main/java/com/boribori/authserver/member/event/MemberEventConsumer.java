@@ -1,7 +1,7 @@
 package com.boribori.authserver.member.event;
 
 import com.boribori.authserver.member.MemberService;
-import com.boribori.authserver.member.event.dto.EventOfPublishReplyAlarm;
+import com.boribori.authserver.member.event.dto.EventOfPublishReplyNotification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -23,7 +23,7 @@ public class MemberEventConsumer {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        EventOfPublishReplyAlarm dto = objectMapper.readValue(json, EventOfPublishReplyAlarm.class);
+        EventOfPublishReplyNotification dto = objectMapper.readValue(json, EventOfPublishReplyNotification.class);
 
         memberService.updateAlarm(dto);
 
