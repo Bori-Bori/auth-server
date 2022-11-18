@@ -15,16 +15,6 @@ public class MemberEventPublisher {
     public static final String TOPIC = "nickname";
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-//    public void sendEventUpdateNickname(Member memberEntity){
-//        DtoOfUpdateNicknameEvent eventDto = DtoOfUpdateNicknameEvent.builder()
-//                .id(memberEntity.getId())
-//                .nickname(memberEntity.getNickname())
-//                .build();
-//        this.kafkaTemplate.send(TOPIC, eventDto);
-//
-//
-//    }
-
     public void sendEventUpdateNickname(Member memberEntity){
 
         DtoOfUpdateNicknameEvent eventDto = DtoOfUpdateNicknameEvent.builder()

@@ -1,18 +1,19 @@
 package com.boribori.authserver.member;
 
-import com.boribori.authserver.alarm.Alarm;
+import com.boribori.authserver.member.event.dto.DtoOfGetNotification;
+import com.boribori.authserver.notification.Notification;
 import com.boribori.authserver.jwt.JwtService;
-import com.boribori.authserver.jwt.dto.TokenData;
 import com.boribori.authserver.member.dto.DtoOfUpdateNickname;
 import com.boribori.authserver.member.event.MemberEventPublisher;
-import com.boribori.authserver.member.event.dto.EventOfPublishReplyAlarm;
+import com.boribori.authserver.member.event.dto.EventOfPublishReplyNotification;
 import com.boribori.authserver.oauth2.dto.DtoOfOauth2UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -69,12 +70,12 @@ public class MemberService {
 
     }
 
-    public void updateAlarm(EventOfPublishReplyAlarm event){
+    public void updateAlarm(EventOfPublishReplyNotification event){
         // 이벤트에 해당하는 user 조회
-        memberRepository.findById(event.getCommentId())
+        memberRepository.findById(event.getCommentUserId())
                 .flatMap(v -> {
-                    v.addAlarm(
-                            Alarm.builder()
+                    v.addNotification(
+                            Notification.builder()
                                     .replyUserNickname(event.getReplyUserNickname())
                                     .commentId(event.getCommentId())
                                     .commentContent(event.getCommentContent())
@@ -87,14 +88,29 @@ public class MemberService {
                                     .build()
                     );
                     memberRepository.insert(v).subscribe();
-                    return null;
+                    return Mono.just(null);
                 }).subscribe();
 
     }
 
-    public void getEvent(){
-        // 이벤트 조회
-        // 조회된 이벤트 식별자 변경
+    public Flux<DtoOfGetNotification> getNotification(String header){
+        return jwtService.getUserData(header)
+                .flatMap(tokenData -> memberRepository.findById(tokenData.getUserId()))
+                .flatMap(member -> {
+
+                    Mono<List<DtoOfGetNotification>> mono = Mono.just(member.getNotifications().stream()
+                            .filter(m -> m.isChecked() == false)
+                            .collect(Collectors.toList())
+                            .stream()
+                            .map(v -> {
+                                v.updateIsChecked();
+                                return DtoOfGetNotification.of(v);
+                            })
+                            .collect(Collectors.toList()));
+                    memberRepository.insert(member).subscribe();
+                    return mono;
+                }).flatMapMany(Flux :: fromIterable);
+
     }
 
 
