@@ -1,5 +1,8 @@
 package com.boribori.authserver.member;
 
+import com.boribori.authserver.exception.NotFoundUserException;
+import com.boribori.authserver.member.dto.DtoOfGetMemberInfo;
+import com.boribori.authserver.member.dto.DtoOfUpdateMember;
 import com.boribori.authserver.member.event.dto.DtoOfGetNotification;
 import com.boribori.authserver.notification.Notification;
 import com.boribori.authserver.jwt.JwtService;
@@ -48,6 +51,7 @@ public class MemberService {
                 userProfile -> memberRepository.save(
                 Member.builder()
                         .id(userProfile.getId().toString())
+                        .profile_image(userProfile.getKakaoAccount().getProfile().getProfileImageUrl())
                         .nickname(userProfile.getProperties().getNickname())
                         .build())
                 );
@@ -112,6 +116,32 @@ public class MemberService {
                 }).flatMapMany(Flux :: fromIterable);
 
     }
+
+    public Mono<DtoOfGetMemberInfo> getMemberInfo(String header){
+
+        return jwtService.getUserData(header)
+                .flatMap(tokenData -> memberRepository.findById(tokenData.getUserId()))
+                .flatMap(member -> Mono.just(DtoOfGetMemberInfo.of(member)))
+                .switchIfEmpty(Mono.error(new NotFoundUserException("유저를 찾을 수 없습니다.")));
+
+    }
+
+    public Mono<DtoOfUpdateMember> updateMemberImage(String header, String imageUrl){
+
+        return jwtService.getUserData(header)
+                .flatMap(tokenData -> memberRepository.findById(tokenData.getUserId()))
+                .flatMap(member -> {
+                    member.updateMemberImage(imageUrl);
+                    return memberRepository.insert(member);
+                })
+                .flatMap(updatedMember -> Mono.just(
+                        DtoOfUpdateMember.builder()
+                                .imagePath(updatedMember.getProfile_image())
+                                .build()
+                ))
+                .switchIfEmpty(Mono.error(new NotFoundUserException("유저를 찾을 수 없습니다.")));
+    }
+    
 
 
 

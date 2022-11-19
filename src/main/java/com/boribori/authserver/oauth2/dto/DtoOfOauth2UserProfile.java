@@ -9,7 +9,7 @@ import lombok.Data;
 public class DtoOfOauth2UserProfile {
 
     /**
-     * Oauth2로 부터 받은 사용자 id
+     * OAuth2로 부터 받은 사용자 id
      */
     private Long id;
 
@@ -40,6 +40,7 @@ public class DtoOfOauth2UserProfile {
     public static class Profile {
 
         private String nickname;
+        private String profileImageUrl;
 
     }
 

@@ -1,5 +1,6 @@
 package com.boribori.authserver.member;
 
+import com.boribori.authserver.exception.ImageValidationException;
 import com.boribori.authserver.notification.Notification;
 import lombok.*;
 import org.springframework.data.cassandra.core.mapping.Column;
@@ -24,6 +25,9 @@ public class Member {
     @Column(value = "nickname")
     private String nickname;
 
+    @Column(value = "profile_image")
+    private String profile_image = null;
+
 
     @Column(value = "notifications")
     private List<Notification> notifications = new ArrayList<>();
@@ -44,5 +48,17 @@ public class Member {
             this.notifications = new ArrayList<>();
         }
         this.notifications.add(notification);
+    }
+
+    public void updateMemberImage(String imageUrl){
+        if(imageUrl == null){
+            throw new ImageValidationException("잘못된 이미지 형식입니다.");
+        }
+
+        if(imageUrl.equals("") || imageUrl.equals(" ")){
+            throw new ImageValidationException("잘못된 이미지 형식입니다.");
+        }
+
+        this.profile_image = imageUrl;
     }
 }
