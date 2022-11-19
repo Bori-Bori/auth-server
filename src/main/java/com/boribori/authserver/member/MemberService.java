@@ -1,5 +1,7 @@
 package com.boribori.authserver.member;
 
+import com.boribori.authserver.exception.NotFoundUserException;
+import com.boribori.authserver.member.dto.DtoOfGetMemberInfo;
 import com.boribori.authserver.member.event.dto.DtoOfGetNotification;
 import com.boribori.authserver.notification.Notification;
 import com.boribori.authserver.jwt.JwtService;
@@ -113,6 +115,17 @@ public class MemberService {
                 }).flatMapMany(Flux :: fromIterable);
 
     }
+
+    public Mono<DtoOfGetMemberInfo> getMemberInfo(String header){
+
+        return jwtService.getUserData(header)
+                .flatMap(tokenData -> memberRepository.findById(tokenData.getUserId()))
+                .flatMap(member -> Mono.just(DtoOfGetMemberInfo.of(member)))
+                .switchIfEmpty(Mono.error(new NotFoundUserException("유저를 찾을 수 없습니다.")));
+
+    }
+
+
     
 
 

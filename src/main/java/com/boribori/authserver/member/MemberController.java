@@ -59,4 +59,17 @@ public class MemberController {
 
     }
 
+    @GetMapping("/api/member")
+    public Mono<ResponseEntity<Response>> getMemberInfo(@RequestHeader("Authorization") String header){
+        return memberService.getMemberInfo(header)
+                .flatMap(dto -> Mono.just(ResponseEntity.ok(
+                        Response.builder()
+                                .status(Response.Status.builder()
+                                        .msg("성공적으로 조회되었습니다.").build())
+                                .content(dto)
+                                .build()
+                )));
+    }
+
+
 }
