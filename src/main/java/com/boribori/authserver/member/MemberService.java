@@ -48,6 +48,7 @@ public class MemberService {
                 userProfile -> memberRepository.save(
                 Member.builder()
                         .id(userProfile.getId().toString())
+                        .profile_image(userProfile.getKakaoAccount().getProfile().getProfileImageUrl())
                         .nickname(userProfile.getProperties().getNickname())
                         .build())
                 );
@@ -112,6 +113,7 @@ public class MemberService {
                 }).flatMapMany(Flux :: fromIterable);
 
     }
+    
 
 
 
