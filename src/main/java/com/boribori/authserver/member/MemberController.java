@@ -1,17 +1,14 @@
 package com.boribori.authserver.member;
 
 import com.boribori.authserver.common.Response;
+import com.boribori.authserver.member.dto.DtoOfRequestUpdateImage;
 import com.boribori.authserver.member.dto.DtoOfUpdateNickname;
-import com.boribori.authserver.member.event.MemberEventPublisher;
 import com.boribori.authserver.member.event.dto.DtoOfGetNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -71,5 +68,18 @@ public class MemberController {
                 )));
     }
 
+    @PostMapping("/api/member/image")
+    public Mono<ResponseEntity<Response>> updateMemberInfo(@RequestHeader("Authorization") String header, @RequestBody DtoOfRequestUpdateImage dtoOfRequestUpdateImage){
+
+        return memberService.updateMemberImage(header, dtoOfRequestUpdateImage.getImagePath())
+                .flatMap(dto -> Mono.just(ResponseEntity.ok(
+                        Response.builder()
+                                .status(Response.Status.builder()
+                                        .msg("성공적으로 수정되었습니다.").build())
+                                .content(dto)
+                                .build()
+                )));
+
+    }
 
 }

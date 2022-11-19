@@ -1,6 +1,7 @@
 package com.boribori.authserver.advice;
 
 import com.boribori.authserver.common.Response;
+import com.boribori.authserver.exception.ImageValidationException;
 import com.boribori.authserver.exception.NotFoundRefreshTokenException;
 import com.boribori.authserver.exception.NotFoundUserException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -36,19 +37,30 @@ public class ControllerAdvice {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public Mono<ResponseEntity> handleCommonException(){
+//    @ExceptionHandler(RuntimeException.class)
+//    public Mono<ResponseEntity> handleCommonException(){
+//        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.
+//                builder()
+//                .status(Response.Status.builder()
+//                        .msg("Bad Request").build())
+//                .content(null)
+//                .build())
+//        );
+//    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    public Mono<ResponseEntity> handleNotFoundUserException(NotFoundUserException e){
         return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.
                 builder()
                 .status(Response.Status.builder()
-                        .msg("Bad Request").build())
+                        .msg(e.getMsg()).build())
                 .content(null)
                 .build())
         );
     }
 
-    @ExceptionHandler(NotFoundUserException.class)
-    public Mono<ResponseEntity> handleNotFoundUserException(NotFoundUserException e){
+    @ExceptionHandler(ImageValidationException.class)
+    public Mono<ResponseEntity> handleNImageValidationException(ImageValidationException e){
         return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.
                 builder()
                 .status(Response.Status.builder()
