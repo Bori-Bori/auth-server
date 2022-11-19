@@ -24,6 +24,9 @@ public class Member {
     @Column(value = "nickname")
     private String nickname;
 
+    @Column(value = "profile_image")
+    private String profile_image = null;
+
 
     @Column(value = "notifications")
     private List<Notification> notifications = new ArrayList<>();
