@@ -57,6 +57,7 @@ public class JwtFactory {
 
         Claims claims = Jwts.claims().setSubject(member.getId());
         claims.put("nickname", member.getNickname());
+        claims.put("profile_image", member.getProfile_image());
 
         LocalDateTime nowTemp = LocalDateTime.now();
         Date now = valueOf(nowTemp);

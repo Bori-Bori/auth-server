@@ -11,5 +11,6 @@ public class DtoOfUpdateNicknameEvent{
 
     private String id;
     private String nickname;
+    private String profilePath;
 
 }
