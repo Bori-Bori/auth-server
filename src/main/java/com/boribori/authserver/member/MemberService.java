@@ -63,7 +63,7 @@ public class MemberService {
                 .flatMap(tokenData -> memberRepository.findById(tokenData.getUserId()))
                 .flatMap(memberEntity -> Mono.just(memberEntity.updateNickname(nickname)))
                 .flatMap(member -> {
-                    memberEventPublisher.sendEventUpdateNickname(member);
+                    memberEventPublisher.sendEventUpdateProfile(member);
                     return memberRepository.save(member);
                 })
                 .flatMap(updatedMemberEntity ->

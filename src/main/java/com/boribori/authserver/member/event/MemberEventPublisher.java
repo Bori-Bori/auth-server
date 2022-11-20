@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberEventPublisher {
 
-    public static final String TOPIC = "nickname";
+    public static final String TOPIC = "profile";
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendEventUpdateNickname(Member memberEntity){
+    public void sendEventUpdateProfile(Member memberEntity){
 
         DtoOfUpdateNicknameEvent eventDto = DtoOfUpdateNicknameEvent.builder()
                 .id(memberEntity.getId())
@@ -28,8 +28,6 @@ public class MemberEventPublisher {
         }catch (Exception e){
             throw new RuntimeException();
         }
-
-
 
     }
 }

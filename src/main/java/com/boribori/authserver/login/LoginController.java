@@ -31,14 +31,4 @@ public class LoginController {
         return result;
     }
 
-
-    @GetMapping("/test/test")
-    public Mono<String> kafkaTest() throws JsonProcessingException {
-        DtoOfUpdateNicknameEvent dto = DtoOfUpdateNicknameEvent.builder()
-                .id("testId")
-                .nickname("testNickname")
-                .build();
-        //memberEventPublisher.sendEventUpdateNickname(dto);
-        return Mono.just("success");
-    }
 }
