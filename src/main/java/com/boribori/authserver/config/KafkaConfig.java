@@ -1,6 +1,5 @@
 package com.boribori.authserver.config;
 
-import com.boribori.authserver.member.event.dto.DtoOfUpdateNicknameEvent;
 import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;

@@ -26,11 +26,11 @@ public class Member {
     private String nickname;
 
     @Column(value = "profile_image")
-    private String profile_image = null;
+    private String profile_image;
 
 
     @Column(value = "notifications")
-    private List<Notification> notifications = new ArrayList<>();
+    private List<Notification> notifications;
 
     public Member updateNickname(String nickname){
         if (nickname == null){
