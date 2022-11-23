@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.cassandra.config.AbstractReactiveCassandraConfiguration;
 import org.springframework.data.cassandra.config.EnableCassandraAuditing;
 import org.springframework.data.cassandra.config.SchemaAction;
-import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
-import org.springframework.data.cassandra.core.cql.keyspace.DropKeyspaceSpecification;
-import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
+import org.springframework.data.cassandra.core.cql.keyspace.*;
 import org.springframework.data.cassandra.repository.config.EnableReactiveCassandraRepositories;
 
 import java.util.Arrays;
@@ -37,10 +35,10 @@ public class CassandraConfig extends AbstractReactiveCassandraConfiguration {
         return Arrays.asList(specification);
     }
 
-    @Override
-    protected List<DropKeyspaceSpecification> getKeyspaceDrops() {
-        return Arrays.asList(DropKeyspaceSpecification.dropKeyspace(keySpace));
-    }
+//    @Override
+//    protected List<DropKeyspaceSpecification> getKeyspaceDrops() {
+//        return Arrays.asList(DropKeyspaceSpecification.dropKeyspace(keySpace));
+//    }
 
     @Override
     protected String getKeyspaceName() {
