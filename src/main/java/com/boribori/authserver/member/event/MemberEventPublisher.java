@@ -20,6 +20,7 @@ public class MemberEventPublisher {
         DtoOfUpdateNicknameEvent eventDto = DtoOfUpdateNicknameEvent.builder()
                 .id(memberEntity.getId())
                 .nickname(memberEntity.getNickname())
+                .profilePath(memberEntity.getProfile_image())
                 .build();
         ObjectMapper om = new ObjectMapper();
         try {
