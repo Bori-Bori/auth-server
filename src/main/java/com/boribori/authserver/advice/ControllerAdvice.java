@@ -4,6 +4,7 @@ import com.boribori.authserver.common.Response;
 import com.boribori.authserver.exception.ImageValidationException;
 import com.boribori.authserver.exception.NotFoundRefreshTokenException;
 import com.boribori.authserver.exception.NotFoundUserException;
+import com.boribori.authserver.notification.exception.NotFoundNotificationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -38,15 +39,15 @@ public class ControllerAdvice {
     }
 
 //    @ExceptionHandler(RuntimeException.class)
-//    public Mono<ResponseEntity> handleCommonException(){
-//        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.
-//                builder()
-//                .status(Response.Status.builder()
-//                        .msg("Bad Request").build())
-//                .content(null)
-//                .build())
-//        );
-//    }
+    public Mono<ResponseEntity> handleCommonException(){
+        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.
+                builder()
+                .status(Response.Status.builder()
+                        .msg("Bad Request").build())
+                .content(null)
+                .build())
+        );
+    }
 
     @ExceptionHandler(NotFoundUserException.class)
     public Mono<ResponseEntity> handleNotFoundUserException(NotFoundUserException e){
@@ -65,6 +66,17 @@ public class ControllerAdvice {
                 builder()
                 .status(Response.Status.builder()
                         .msg(e.getMsg()).build())
+                .content(null)
+                .build())
+        );
+    }
+
+    @ExceptionHandler(NotFoundNotificationException.class)
+    public Mono<ResponseEntity> handleNotFoundNotificationException(){
+        return Mono.just(ResponseEntity.status(HttpStatus.NO_CONTENT).body(Response.
+                builder()
+                .status(Response.Status.builder()
+                        .msg("새로운 알림이 존재하지 않습니다.").build())
                 .content(null)
                 .build())
         );
