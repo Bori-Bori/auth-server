@@ -68,7 +68,6 @@ public class MemberService {
                 })
                 .flatMap(updatedMemberEntity ->
                         Mono.just(DtoOfUpdateNickname.builder()
-                                .id(updatedMemberEntity.getId())
                                 .nickname(updatedMemberEntity.getNickname())
                                 .build()));
 
@@ -134,11 +133,14 @@ public class MemberService {
                     member.updateMemberImage(imageUrl);
                     return memberRepository.insert(member);
                 })
-                .flatMap(updatedMember -> Mono.just(
-                        DtoOfUpdateMember.builder()
-                                .imagePath(updatedMember.getProfile_image())
-                                .build()
-                ))
+                .flatMap(updatedMember -> {
+                    memberEventPublisher.sendEventUpdateProfile(updatedMember);
+                    return Mono.just(
+                            DtoOfUpdateMember.builder()
+                                    .imagePath(updatedMember.getProfile_image())
+                                    .build()
+                    );
+                })
                 .switchIfEmpty(Mono.error(new NotFoundUserException("유저를 찾을 수 없습니다.")));
     }
     
