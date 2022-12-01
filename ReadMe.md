@@ -1,8 +1,8 @@
-# Bori-Bori Auth Server
+# 🤗 Bori-Bori Auth Server
 
 > 본 레포지토리는 보리보리의 인증 서버입니다.
 
-# How to Run?
+# 🧐 How to Run?
 
 1. First Step
 
@@ -26,13 +26,13 @@ $ ./gradlew build
 $ nohup java -jar ~.jar & /dev/null
 ```
 
-# How to Contribute?
+# 🌼 How to Contribute?
 
 1. Register Issue
 2. editing code
 3. create pull & request
 
-# Server Functions
+# 🔎 Server Functions
 
 ## Oauth2 Login
 
@@ -54,12 +54,12 @@ $ nohup java -jar ~.jar & /dev/null
 * Kafka를 통해서 이벤트를 발행합니다.
 * Kafka를 통해서 이벤트를 소비합니다.
 
-# Architecture
+# 🏢 Architecture
 
 ## Server Architecture
 <img width="623" alt="스크린샷 2022-12-01 오후 5 34 30" src="https://user-images.githubusercontent.com/79268661/205028429-28a5b603-6f57-4f9b-959e-ddf49ed1dc1a.png">
 
-# Server Stack
+# ☘️ Server Stack
 
 * Framework : Spring boot 2.7.5
 
@@ -71,7 +71,7 @@ $ nohup java -jar ~.jar & /dev/null
   * zookeeper latest version
   * kafka latest version
 
-# Reference
+# 🔗 Reference
 
 * [✅ Auth-Server Repository](https://github.com/Bori-Bori/auth-server)
 
